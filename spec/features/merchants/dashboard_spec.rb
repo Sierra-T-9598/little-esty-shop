@@ -163,4 +163,11 @@ RSpec.describe 'Merchant Dashboard' do
       expect(fourth).to appear_before(fifth)
     end
   end
+
+  scenario 'visitor sees link to view all discounts' do
+    expect(page).to have_link("My Discounts", href: merchant_bulk_discounts_path(merchant_1.id))
+
+    click_link("My Discounts")
+    expect(current_path).to eq(merchant_bulk_dicounts_path(merchant_1.id))
+  end
 end
