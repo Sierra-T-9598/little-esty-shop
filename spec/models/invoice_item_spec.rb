@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe InvoiceItem do
-  describe 'validation' do
+  describe 'validations' do
     it { should define_enum_for(:status).with_values([:packaged, :pending, :shipped]) }
     it { should validate_presence_of(:quantity) }
     it { should validate_presence_of(:unit_price) }
@@ -9,7 +9,7 @@ RSpec.describe InvoiceItem do
     it { should validate_presence_of(:invoice_id) }
   end
 
-  describe 'relations' do
+  describe 'relationships' do
     it { should belong_to :invoice }
     it { should belong_to :item }
   end
