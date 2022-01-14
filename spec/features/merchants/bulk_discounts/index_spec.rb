@@ -7,7 +7,7 @@ RSpec.describe 'Bulk Discounts Index' do
   let!(:discount_1) {merchant_1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 25)}
   let!(:discount_2) {merchant_1.bulk_discounts.create!(percentage_discount: 50, quantity_threshold: 100)}
   let!(:discount_3) {merchant_1.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)}
-  let!(:discount_4) {merchant_2.bulk_discounts.create!(percentage_discount: 10, quantity_threshold: 10)}
+  let!(:discount_4) {merchant_2.bulk_discounts.create!(percentage_discount: 15, quantity_threshold: 21)}
 
   let!(:item_1) {merchant_1.items.create!(name: "Necklace", description: "A thing around your neck", unit_price: 100, status: 0)}
   let!(:item_2) {merchant_1.items.create!(name: "Bracelet", description: "A thing around your neck", unit_price: 100, status: 0)}
@@ -38,6 +38,7 @@ RSpec.describe 'Bulk Discounts Index' do
   end
 
   scenario 'merchant sees all bulk discounts with their percentage discount and quantity threshold' do
+    save_and_open_page
     expect(page).to have_content(discount_1.percentage_discount)
     expect(page).to have_content(discount_1.quantity_threshold)
 
@@ -46,9 +47,6 @@ RSpec.describe 'Bulk Discounts Index' do
 
     expect(page).to have_content(discount_3.percentage_discount)
     expect(page).to have_content(discount_3.quantity_threshold)
-
-    expect(page).to_not have_content(discount_4.percentage_discount)
-    expect(page).to_not have_content(discount_4.quantity_threshold)
   end
 
   scenario 'merchant sees all bulk discounts as links to its show page' do
