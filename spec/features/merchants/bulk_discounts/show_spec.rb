@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Bulk Discounts Index' do
+RSpec.describe 'Bulk Discounts Show' do
   let!(:merchant_1) {Merchant.create!(name: 'Ron Swanson')}
   let!(:merchant_2) {Merchant.create!(name: 'Jon Swanson')}
 
@@ -34,24 +34,14 @@ RSpec.describe 'Bulk Discounts Index' do
   let!(:transaction_4) {invoice_4.transactions.create!(result: 'success')}
 
   before(:each) do
-    visit merchant_bulk_discounts_path(merchant_1.id)
+    visit merchant_bulk_discount_path(merchant_1.id, discount_1.id)
   end
 
-  scenario 'merchant sees all bulk discounts with their percentage discount and quantity threshold' do
+  scenario 'merchant sees the given bulk discount as its percentage discount and quantity threshold' do
     expect(page).to have_content(discount_1.percentage_discount)
     expect(page).to have_content(discount_1.quantity_threshold)
 
-    expect(page).to have_content(discount_2.percentage_discount)
-    expect(page).to have_content(discount_2.quantity_threshold)
-
-    expect(page).to have_content(discount_3.percentage_discount)
-    expect(page).to have_content(discount_3.quantity_threshold)
-  end
-
-  scenario 'merchant sees all bulk discounts as links to its show page' do
-    expect(page).to have_link("Link to Discount ##{discount_1.id}", href: merchant_bulk_discount_path(merchant_1.id, discount_1.id))
-    expect(page).to have_link("Link to Discount ##{discount_2.id}", href: merchant_bulk_discount_path(merchant_1.id, discount_2.id))
-    expect(page).to have_link("Link to Discount ##{discount_3.id}", href: merchant_bulk_discount_path(merchant_1.id, discount_3.id))
-    expect(page).to_not have_link("Link to Discount ##{discount_4.id}")
+    expect(page).to_not have_content(discount_2.percentage_discount)
+    expect(page).to_not have_content(discount_2.quantity_threshold)
   end
 end
