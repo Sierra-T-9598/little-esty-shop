@@ -54,4 +54,17 @@ RSpec.describe 'Bulk Discounts Index' do
     expect(page).to have_link("Link to Discount ##{discount_3.id}", href: merchant_bulk_discount_path(merchant_1.id, discount_3.id))
     expect(page).to_not have_link("Link to Discount ##{discount_4.id}")
   end
+
+  scenario 'merchant sees link to create a new discount' do
+    click_link("Create New Discount")
+    expect(current_path).to eq(new_merchant_bulk_discount_path(merchant_1.id))
+
+    fill_in 'Percentage discount', with: 30
+    fill_in 'Quantity threshold', with: 35
+    click_button "Create Discount"
+
+    expect(current_path).to eq(merchant_bulk_discounts_path(merchant_1.id))
+    expect(page).to have_content(30)
+    expect(page).to have_content(35)
+  end
 end
