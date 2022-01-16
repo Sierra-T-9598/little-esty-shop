@@ -54,6 +54,21 @@ RSpec.describe Invoice do
         expect(invoice_1.total_revenue_by_merchant(merchant_1.id)).to eq(total_revenue)
       end
     end
+
+    describe '#discount_items' do
+      it 'returns list of items that qualify for discount on an invoice' do
+        merchant = Merchant.create!(name: 'Shakey Graves')
+        discount = merchant.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 10)
+        item_1 = merchant.items.create!(name: "Necklace", description: "A thing around your neck", unit_price: 1000)
+        item_2 = merchant.items.create!(name: "Bracelet", description: "A thing around your wrist", unit_price: 500)
+        customer = Customer.create!(first_name: 'Nathaniel', last_name: 'Rateliff')
+        invoice = customer.invoices.create!(status: 1, created_at: '2012-03-25 09:54:09')
+        invoice_item_1 = InvoiceItem.create!(quantity: 5, unit_price: item_1.unit_price, item_id: item_1.id, invoice_id: invoice.id, status: 2)
+        invoice_item_2 = InvoiceItem.create!(quantity: 5, unit_price: item_2.unit_price, item_id: item_2.id, invoice_id: invoice.id, status: 2)
+
+        expect(invoice.discount_items).to eq([])
+      end
+    end
   end
 
   describe 'class methods' do

@@ -4,20 +4,34 @@ RSpec.describe 'Merchant Invoice Show Page', type: :feature do
 
   let!(:merchant_1) {Merchant.create!(name: 'Ron Swanson')}
   let!(:merchant_2) {Merchant.create!(name: 'Deb Millhouse')}
+  let!(:merchant_3) {Merchant.create!(name: 'Mickey Mouse')}
+
+  let!(:discount_1) {merchant_3.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 25)}
+  let!(:discount_2) {merchant_3.bulk_discounts.create!(percentage_discount: 50, quantity_threshold: 100)}
 
   let!(:item_1) {merchant_1.items.create!(name: "Necklace", description: "A thing around your neck", unit_price: 150, status: 1)}
   let!(:item_2) {merchant_1.items.create!(name: "Bracelet", description: "A thing around your wrist", unit_price: 300, status: 0)}
   let!(:item_3) {merchant_2.items.create!(name: "Earrings", description: "A thing around your ears", unit_price: 220, status: 0)}
   let!(:item_4) {merchant_2.items.create!(name: "Button", description: "A thing for your pants", unit_price: 150)}
   let!(:item_5) {merchant_1.items.create!(name: "Pokemon Card", description: "A thing for your pants", unit_price: 150, status: 0)}
+  let!(:item_6) {merchant_3.items.create!(name: "Club House", description: "Fun times", unit_price: 15000, status: 0)}
+  let!(:item_7) {merchant_3.items.create!(name: "Disney Pass", description: "It's a small world", unit_price: 16000, status: 0)}
+  let!(:item_8) {merchant_3.items.create!(name: "Swag", description: "Cool stuff", unit_price: 1000, status: 0)}
+
 
   let!(:customer_1) {Customer.create!(first_name: "Billy", last_name: "Joel")}
 
   let!(:invoice_1)  {customer_1.invoices.create!(status: 1, created_at: '2012-03-25 09:54:09')}
+  let!(:invoice_2)  {customer_1.invoices.create!(status: 1, created_at: '2012-03-25 09:54:09')}
+  let!(:invoice_3)  {customer_1.invoices.create!(status: 1, created_at: '2012-03-25 09:54:09')}
+
 
   let!(:invoice_item_1) {InvoiceItem.create!(quantity: 3, unit_price: item_1.unit_price, item_id: item_1.id, invoice_id: invoice_1.id, status: 0)}
   let!(:invoice_item_2) {InvoiceItem.create!(quantity: 5, unit_price: item_2.unit_price, item_id: item_2.id, invoice_id: invoice_1.id, status: 1)}
   let!(:invoice_item_3) {InvoiceItem.create!(quantity: 5, unit_price: item_5.unit_price, item_id: item_5.id, invoice_id: invoice_1.id, status: 2)}
+  let!(:invoice_item_4) {InvoiceItem.create!(quantity: 100, unit_price: item_6.unit_price, item_id: item_6.id, invoice_id: invoice_2.id, status: 2)}
+  let!(:invoice_item_5) {InvoiceItem.create!(quantity: 35, unit_price: item_7.unit_price, item_id: item_7.id, invoice_id: invoice_2.id, status: 2)}
+  let!(:invoice_item_6) {InvoiceItem.create!(quantity: 5, unit_price: item_8.unit_price, item_id: item_8.id, invoice_id: invoice_2.id, status: 2)}
 
   before (:each) do
     visit merchant_invoice_path(merchant_1.id, invoice_1.id)
@@ -94,25 +108,51 @@ RSpec.describe 'Merchant Invoice Show Page', type: :feature do
 
         select "Pending", from: "Status"
         click_button("Update Item Status")
+      end
 
-        expect(current_path).to eq(merchant_invoice_path(merchant_1.id, invoice_1.id))
+      expect(current_path).to eq(merchant_invoice_path(merchant_1.id, invoice_1.id))
+
+      within "#item#{item_1.id}" do
         expect(page).to have_field('Status', with: 'pending')
         expect(page).to have_no_field('Status', with: 'packaged')
 
         select "Shipped", from: "Status"
         click_button("Update Item Status")
+      end
 
-        expect(current_path).to eq(merchant_invoice_path(merchant_1.id, invoice_1.id))
+      expect(current_path).to eq(merchant_invoice_path(merchant_1.id, invoice_1.id))
+
+      within "#item#{item_1.id}" do
         expect(page).to have_field('Status', with: 'shipped')
         expect(page).to have_no_field('Status', with: 'pending')
 
         select "Packaged", from: "Status"
         click_button("Update Item Status")
-
+      end
         expect(current_path).to eq(merchant_invoice_path(merchant_1.id, invoice_1.id))
+
+      within "#item#{item_1.id}" do
         expect(page).to have_field('Status', with: 'packaged')
         expect(page).to have_no_field('Status', with: 'shipped')
       end
     end
+  end
+
+  scenario 'merchant sees link to show page for bulk discount that was applied next to each invoice item (if any)' do
+    visit merchant_invoice_path(merchant_3.id, invoice_2.id)
+
+    within "#invoice_item-#{invoice_item_4.id}" do
+      expect(page).to have_link("Applied Discount", href: merchant_bulk_discount_path(merchant_3.id, discount_2.id))
+    end
+
+    within "#invoice_item-#{invoice_item_5.id}" do
+      expect(page).to have_link("Applied Discount", href: merchant_bulk_discount_path(merchant_3.id, discount_1.id))
+    end
+
+    within "#invoice_item-#{invoice_item_5.id}" do
+      click_link "Applied Discount"
+    end
+  
+    expect(current_path).to eq(merchant_bulk_discount_path(merchant_3.id, discount_1.id))
   end
 end
