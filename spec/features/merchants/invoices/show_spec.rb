@@ -152,7 +152,12 @@ RSpec.describe 'Merchant Invoice Show Page', type: :feature do
     within "#invoice_item-#{invoice_item_5.id}" do
       click_link "Applied Discount"
     end
-  
+
     expect(current_path).to eq(merchant_bulk_discount_path(merchant_3.id, discount_1.id))
+  end
+
+  scenario 'merchant sees total discounted revenue for this invoice' do
+    visit merchant_invoice_path(merchant_3.id, invoice_2.id)
+    expect(page).to have_content(invoice_2.total_discounted_revenue.to_f/100)
   end
 end
