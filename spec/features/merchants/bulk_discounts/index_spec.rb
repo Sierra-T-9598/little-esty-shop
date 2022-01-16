@@ -67,4 +67,12 @@ RSpec.describe 'Bulk Discounts Index' do
     expect(page).to have_content(30)
     expect(page).to have_content(35)
   end
+
+  scenario 'merchant sees link to delete each discount' do
+    expect(page).to have_content(discount_1.percentage_discount)
+    click_link("Delete ##{discount_1.id}")
+
+    expect(current_path).to eq(merchant_bulk_discounts_path(merchant_1.id))
+    expect(page).to_not have_content(discount_1.percentage_discount)
+  end
 end
