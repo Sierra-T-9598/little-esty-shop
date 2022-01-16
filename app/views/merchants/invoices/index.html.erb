@@ -1,7 +1,7 @@
 <%= render partial: '/layouts/partials/merchant_dashboard_links' %><br>
 <h1><%= @merchant.name %> Invoices Index</h1>
 
-<% @invoices.each do |invoice| %>
+<% @invoices.uniq.each do |invoice| %>
   <div id="invoice<%= invoice.id %>">
     <p><%= link_to invoice.id, merchant_invoice_path(@merchant.id, "#{invoice.id}") %></p>
   </div>

@@ -31,7 +31,7 @@ RSpec.describe 'Merchant Invoices Index Page', type: :feature do
     visit merchant_invoices_path(merchant_1)
   end
 
-  scenario 'mechant sees all invoices that have at least one of their items' do
+  scenario 'merchant sees all invoices that have at least one of their items' do
     expect(page).to have_content(invoice_1.id)
     expect(page).to have_content(invoice_2.id)
     expect(page).to have_content(invoice_3.id)
