@@ -68,6 +68,5 @@ RSpec.describe 'Admin Invoice Show page' do
 
   scenario 'admin sees total discounted revenue for this invoice' do
     expect(page).to have_content(invoice_1.total_discounted_revenue.to_f/100)
-    save_and_open_page
   end
 end
