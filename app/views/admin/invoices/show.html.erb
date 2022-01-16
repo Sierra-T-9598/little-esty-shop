@@ -21,3 +21,4 @@
 <% end %>
 <br>
 <h3> Total Revenue: $<%= @invoice.invoice_items.revenue.to_f/100 %> </h3>
+<h3> Total Discounted Revenue: <%=number_to_currency(@invoice.total_discounted_revenue.to_f/100)%></h3>
