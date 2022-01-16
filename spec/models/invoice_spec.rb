@@ -69,6 +69,36 @@ RSpec.describe Invoice do
         expect(invoice.discount_items).to eq([])
       end
     end
+
+    describe '#total_discount' do
+      it 'calculates the total disount amount of an invoice' do
+        merchant = Merchant.create!(name: 'Shakey Graves')
+        discount_1 = merchant.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 10)
+        discount_2 = merchant.bulk_discounts.create!(percentage_discount: 15, quantity_threshold: 8)
+        item_1 = merchant.items.create!(name: "Necklace", description: "A thing around your neck", unit_price: 1000)
+        item_2 = merchant.items.create!(name: "Bracelet", description: "A thing around your wrist", unit_price: 500)
+        customer = Customer.create!(first_name: 'Nathaniel', last_name: 'Rateliff')
+        invoice = customer.invoices.create!(status: 1, created_at: '2012-03-25 09:54:09')
+        invoice_item_1 = InvoiceItem.create!(quantity: 10, unit_price: item_1.unit_price, item_id: item_1.id, invoice_id: invoice.id, status: 2)
+        invoice_item_2 = InvoiceItem.create!(quantity: 5, unit_price: item_2.unit_price, item_id: item_2.id, invoice_id: invoice.id, status: 2)
+        expect(invoice.total_discount).to eq(2000)
+      end
+    end
+
+    describe '#total_discounted_revenue' do
+      it 'calculates the total revenue including discounts' do
+        merchant = Merchant.create!(name: 'Shakey Graves')
+        discount_1 = merchant.bulk_discounts.create!(percentage_discount: 20, quantity_threshold: 10)
+        discount_2 = merchant.bulk_discounts.create!(percentage_discount: 15, quantity_threshold: 8)
+        item_1 = merchant.items.create!(name: "Necklace", description: "A thing around your neck", unit_price: 1000)
+        item_2 = merchant.items.create!(name: "Bracelet", description: "A thing around your wrist", unit_price: 500)
+        customer = Customer.create!(first_name: 'Nathaniel', last_name: 'Rateliff')
+        invoice = customer.invoices.create!(status: 1, created_at: '2012-03-25 09:54:09')
+        invoice_item_1 = InvoiceItem.create!(quantity: 10, unit_price: item_1.unit_price, item_id: item_1.id, invoice_id: invoice.id, status: 2)
+        invoice_item_2 = InvoiceItem.create!(quantity: 5, unit_price: item_2.unit_price, item_id: item_2.id, invoice_id: invoice.id, status: 2)
+        expect(invoice.total_discounted_revenue).to eq(10500)
+      end
+    end
   end
 
   describe 'class methods' do

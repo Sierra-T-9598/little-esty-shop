@@ -4,6 +4,7 @@ RSpec.describe 'Admin Invoice Show page' do
   let!(:customer_1) {Customer.create!(first_name: "Billy", last_name: "Joel")}
 
   let!(:merchant_1) {Merchant.create!(name: 'Ron Swanson', status: 0)}
+  let!(:discount_1) {merchant_1.bulk_discounts.create!(percentage_discount: 20, quantity_threshold:10)}
 
   let!(:item_1) {merchant_1.items.create!(name: "Necklace", description: "A thing around your neck", unit_price: 1000, status: 0)}
   let!(:item_2) {merchant_1.items.create!(name: "Bracelet", description: "A thing around your wrist", unit_price: 900, status: 0)}
@@ -63,5 +64,10 @@ RSpec.describe 'Admin Invoice Show page' do
 
   scenario 'admin sees total revenue generated from this invoice' do
     expect(page).to have_content(invoice_1.invoice_items.revenue.to_f/100)
+  end
+
+  scenario 'admin sees total discounted revenue for this invoice' do
+    expect(page).to have_content(invoice_1.total_discounted_revenue.to_f/100)
+    save_and_open_page
   end
 end
