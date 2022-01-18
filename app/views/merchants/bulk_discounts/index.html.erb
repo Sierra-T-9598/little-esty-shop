@@ -15,7 +15,7 @@
 <h3>Upcoming Holidays</h3>
 
 <ol>
-<% @holidays.upcoming_us_holidays.each do |holiday| %>
-  <li><%= holiday[:name] %>, <%= holiday[:date] %></li>
+<% @holidays.each do |holiday| %>
+  <li><%= holiday.name %>, <%= holiday.date %></li>
 <% end %>
 </ol>
