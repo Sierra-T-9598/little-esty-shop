@@ -34,12 +34,24 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 
 RSpec.configure do |config|
+  config.before(:each) do
+    json_response = File.read('spec/fixtures/next_holidays.json')
+    stub_request(:get, "https://date.nager.at/api/v2/NextPublicHolidays/US").
+    to_return(status: 200, body: json_response)
+  end
 
-  config.before :each do
-    mock_holidays = [{}, {}, {}]
-
-    allow_any_instance_of(HolidayService).to receive(:upcoming_us_holidays).and_return(mock_holidays)
-  end 
+  # config.before(:each) do
+  #   stub_request(:get, "https://date.nager.at/").
+  #        with(
+  #          headers: {
+  #         'Accept'=>'*/*',
+  #         'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+  #         'Host'=>'date.nager.at',
+  #         'User-Agent'=>'Ruby'
+  #          }).
+  #        to_return(status: 200, body: "", headers: {})
+  # end
+  
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
