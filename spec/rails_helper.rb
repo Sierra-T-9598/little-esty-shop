@@ -51,7 +51,7 @@ RSpec.configure do |config|
   #          }).
   #        to_return(status: 200, body: "", headers: {})
   # end
-  
+  config.include FactoryBot::Syntax::Methods
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
