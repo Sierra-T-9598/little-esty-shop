@@ -38,11 +38,13 @@ RSpec.describe 'Bulk Discounts Show' do
   end
 
   scenario 'merchant sees the given bulk discount as its percentage discount and quantity threshold' do
-    expect(page).to have_content(discount_1.percentage_discount)
-    expect(page).to have_content(discount_1.quantity_threshold)
+    within("#discount-#{discount_1.id}") do
+      expect(page).to have_content(discount_1.percentage_discount)
+      expect(page).to have_content(discount_1.quantity_threshold)
 
-    expect(page).to_not have_content(discount_2.percentage_discount)
-    expect(page).to_not have_content(discount_2.quantity_threshold)
+      expect(page).to_not have_content(discount_2.percentage_discount)
+      expect(page).to_not have_content(discount_2.quantity_threshold)
+    end 
   end
 
   scenario 'merchant sees link to edit bulk discount' do

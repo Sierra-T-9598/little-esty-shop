@@ -1,16 +1,17 @@
 <div style="text-align: left; top:px; font-size:150%;">
   <%= @merchant.name %>
+  <h3><%=link_to "My Discounts", merchant_bulk_discounts_path(@merchant.id)%></h3>
 </div>
 
-<div style="text-align: right; top:-10px;font-size:100%;">
-  <%= render partial: '/layouts/partials/merchant_dashboard_links' %><br>
+<div style="text-align: right; top:-10px; font-size:100%;">
+  <%= render partial: '/layouts/partials/merchant_dashboard_links' %>
 </div>
 
-<div style = "position:absolute; right:30px; top:200px">
+<div style = "position:absolute; right:30px; top:250px">
   <%= render partial: '/layouts/partials/top_customers' %>
 </div>
 
-<div style = "position:absolute; left:30px; top:200px">
+<div style = "position:absolute; left:30px; top:250px">
 <h3>Items Ready to Ship</h3>
   <% @merchant.items_not_shipped.each do |item| %>
     <div id="item<%=item.id%>">
@@ -18,5 +19,3 @@
     </div>
   <% end %>
 </div>
-
-<h2><%=link_to "My Discounts", merchant_bulk_discounts_path(@merchant.id)%></h2>
