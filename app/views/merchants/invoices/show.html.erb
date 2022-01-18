@@ -25,10 +25,9 @@
         <%= f.submit "Update Item Status" %>
         <% end %></p>
 
-        <% discount_items = @invoice.discount_items %>
         <section id="invoice_item-<%=invoice_item.id%>">
-        <% if discount_items.include?(invoice_item) %>
-          <%= link_to "Applied Discount", merchant_bulk_discount_path(@merchant.id, discount_items.find(invoice_item.id).discount) %>
+        <% if @discount_items.include?(invoice_item) %>
+          <%= link_to "Applied Discount", merchant_bulk_discount_path(@merchant.id, @discount_items.find(invoice_item.id).discount) %>
         <% end %>
         </section>
     <% end %>
